@@ -5,37 +5,37 @@ import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers';
 
 
-const GITLAB_TOKEN = process.env.GITLAB_TOKEN || 'glpat-cyxus1VeAzXTsAh8p_os';
-const GITLAB_URL = process.env.GITLAB_URL || 'https://git.com';
+const GITLAB_TOKEN = process.env.GITLAB_TOKEN || 'glpat-QneyPoDctUzM-KDyDnK3';
+const GITLAB_URL = process.env.GITLAB_URL || 'https://gitlab.com';
 
 const api = new Gitlab({
     host: GITLAB_URL,
     token: GITLAB_TOKEN,
 });
 
-//write a class constructor that returns all projects from GitlabAPI
-class GitlabAPI {
-    constructor() {
-        this.projects = api.Projects.all();
-    }
+// async function getProjectByName(name) {
+//     const projects = await api.Projects.all({ search: name });
+//     return projects.find((project) => project.name === name);
+// }
+
+async function getAllUserProjects() {
+    const projects = await api.Projects.all({ membership: true })
+    let repos = []
+    projects.forEach(project => {
+        const _project = {
+            name: project.name,
+            id: project.id,
+            url: project.web_url
+        }
+        repos.push(_project)
+    })
+    return repos
 }
 
-
-GitlabAPI = new GitlabAPI();
-
-// async function getAllUserProjects() {
-//     const projects = await api.Projects.all({ membership: true })
-//     let repos = []
-//     projects.forEach(project => {
-//         const _project = {
-//             name: project.name,
-//             id: project.id,
-//             url: project.web_url
-//         }
-//         repos.push(_project)
-//     })
-//     return repos
-// }
+async function getProjectByName(name) {
+    const repo = await api.Projects.all({ search: name })
+    return repo.find((project) => project.name === name)
+}
 
 async function getProjectOverview(repo_id) {
     const repo = await api.Projects.show(repo_id)
@@ -73,28 +73,26 @@ async function getMergeRequests(repo_id) {
     return _merge_requests
 }
 
-/*
-Start of Fix shit
-
-
 async function getMergeRequestOverview(repo_id, merge_request_id) {
-    const merge_requests = await api.MergeRequests.all({repo_id, merge_request_id })
-    const issues = (await api.Issues.all({ projectId: repo_id})).filter(issue => issue.merge_requests && issue.merge_requests === merge_request_id)
+    const merge_request = await api.MergeRequests.show(repo_id, merge_request_id)
+    const commits = await api.MergeRequests.commits(repo_id, merge_request_id)
+    const approvals = await api.MergeRequests.approvals(repo_id, merge_request_id)
     return {
-        id: merge_requests.id,
-
+        id: merge_request.id,
+        title: merge_request.title,
+        url: merge_request.web_url,
+        state: merge_request.state,
+        created_at: merge_request.created_at,
+        updated_at: merge_request.updated_at,
+        closed_at: merge_request.closed_at,
+        merged_at: merge_request.merged_at,
+        commits: commits.length,
+        approvals: approvals.length,
+        approvals_required: merge_request.approvals_required,
+        approvals_left: merge_request.approvals_left,
+        approvals_percentage: Math.round((approvals.length / merge_request.approvals_required) * 100)
     }
 }
-
-
-async function getNotesForMergeRequest() {
-    
-}
-
-
-
-End of Fix Shit
-*/
 
 async function getProjectMilestones(repo_id) {
     let _milestones = []
@@ -133,11 +131,12 @@ async function getMilestoneOverview(repo_id, milestone_id) {
 }
 
 
-//Replace console.log with an async function that returns a promise
-
 yargs(hideBin(process.argv))
     .command('list', 'fetch all of the projects by current user', () => { }, async () => {
-        console.info(await GitlabAPI())
+        console.info(await getAllUserProjects())
+    })
+    .command('project <name>', 'fetch a project by a name input', () => { }, async (argv) =>{
+        console.info(await getProjectByName(argv.name))
     })
     .command('overview <id>', 'get overview of specific project', () => { }, async (argv) => {
         console.info(await getProjectOverview(argv.id))
