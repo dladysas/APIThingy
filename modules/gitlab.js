@@ -78,43 +78,6 @@ async function getMergeRequestOverview(repo_id, merge_request_id) {
         approvals_percentage: Math.round((approvals.length / merge_request.approvals_required) * 100)
     }
 }
-
-// async function getProjectMilestones(repo_id) {
-//     let _milestones = []
-//     const milestones = await api.ProjectMilestones.show(repo_id)
-//     milestones.forEach(milestone => {
-//         _milestones.push({
-//             title: milestone.title,
-//             id: milestone.id,
-//             description: milestone.description,
-//             due_date: milestone.due_date,
-//             state: milestone.state,
-//             created_at: milestone.created_at,
-//             expired: milestone.expired
-//         })
-//     })
-//     return _milestones
-// }
-
-// async function getMilestoneOverview(repo_id, milestone_id) {
-//     const milestone = await api.ProjectMilestones.show(repo_id, milestone_id)
-//     const issues = (await api.Issues.all({ projectId: repo_id })).filter(issue => issue.milestone && issue.milestone.id === milestone_id)
-//     return {
-//         title: milestone.title,
-//         id: milestone.id,
-//         description: milestone.description,
-//         due_date: milestone.due_date,
-//         state: milestone.state,
-//         created_at: milestone.created_at,
-//         expired: milestone.expired,
-//         issues: issues.length,
-//         open_issues: issues.filter(issue => issue.state === 'opened').length,
-//         closed_issues: issues.filter(issue => issue.state === 'closed').length,
-//         open_issues_percentage: Math.round((issues.filter(issue => issue.state === 'opened').length / issues.length) * 100),
-//         closed_issues_percentage: Math.round((issues.filter(issue => issue.state === 'closed').length / issues.length) * 100)
-//     }
-// }
-
 //list project issue notes
 async function getProjectIssueNotes(repo_id, issue_id) {
     let _notes = []
@@ -138,7 +101,5 @@ export default {
     getProjectOverview, 
     getMergeRequests, 
     getMergeRequestOverview, 
-    // getProjectMilestones, 
-    // getMilestoneOverview, 
     getProjectIssueNotes, 
 }
