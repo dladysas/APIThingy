@@ -1,5 +1,0 @@
-Generate report using + Timeframe example. node init.js dladysas@shift.com +  yesterday / last week / last month
-MR created by + date
-Commits done by + date
-MR Approved by + date
-MR merged by + date
