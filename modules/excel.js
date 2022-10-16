@@ -8,17 +8,18 @@ async function report(data) {
   ws['!cols'] = [
     {wch: 10},
     {wch: 10},
-    {wch: 10},
+    {wch: 20},
     {wch: 10},
     {wch: 22},
-    {wch: 10},
-    {wch: 12},
+    {wch: 22},
+    {wch: 22},
     {wch: 12},
     {wch: 22},
     {wch: 22},
   ];
   XLSX.utils.book_append_sheet(wb, ws, "Report");
-  XLSX.writeFile(wb, "report.xlsx");
+  XLSX.writeFile(wb,  "report.xlsx");
+  XLSX.writeFile(wb,  "report.csv");
   return ws
 }
 
