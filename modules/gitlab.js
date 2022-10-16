@@ -5,12 +5,10 @@ dotenv.config()
 const GITLAB_TOKEN = process.env.GITLAB_TOKEN;
 const GITLAB_URL = process.env.GITLAB_URL;
 
-
 const api = new Gitlab({
     host: GITLAB_URL,
     token: GITLAB_TOKEN,
 });
-
 
 async function getAllUserProjects() {
     const projects = await api.Projects.all({ membership: true })
@@ -25,11 +23,10 @@ async function getAllUserProjects() {
     return repos
 }
 
-
 async function getProjectOverview(repo_id) {
     const repo = await api.Projects.show(repo_id)
     const issues = await api.Issues.all({ projectId: repo_id })
-    return {
+    return [{
         name: repo.name,
         id: repo.id,
         description: repo.description,
@@ -40,7 +37,7 @@ async function getProjectOverview(repo_id) {
         closed_issues: issues.filter(issue => issue.state === 'closed').length,
         open_issues_percentage: Math.round((issues.filter(issue => issue.state === 'opened').length / issues.length) * 100),
         closed_issues_percentage: Math.round((issues.filter(issue => issue.state === 'closed').length / issues.length) * 100)
-    }
+    }]
 }
 
 async function getMergeRequests(repo_id) {
@@ -82,41 +79,41 @@ async function getMergeRequestOverview(repo_id, merge_request_id) {
     }
 }
 
-async function getProjectMilestones(repo_id) {
-    let _milestones = []
-    const milestones = await api.ProjectMilestones.show(repo_id)
-    milestones.forEach(milestone => {
-        _milestones.push({
-            title: milestone.title,
-            id: milestone.id,
-            description: milestone.description,
-            due_date: milestone.due_date,
-            state: milestone.state,
-            created_at: milestone.created_at,
-            expired: milestone.expired
-        })
-    })
-    return _milestones
-}
+// async function getProjectMilestones(repo_id) {
+//     let _milestones = []
+//     const milestones = await api.ProjectMilestones.show(repo_id)
+//     milestones.forEach(milestone => {
+//         _milestones.push({
+//             title: milestone.title,
+//             id: milestone.id,
+//             description: milestone.description,
+//             due_date: milestone.due_date,
+//             state: milestone.state,
+//             created_at: milestone.created_at,
+//             expired: milestone.expired
+//         })
+//     })
+//     return _milestones
+// }
 
-async function getMilestoneOverview(repo_id, milestone_id) {
-    const milestone = await api.ProjectMilestones.show(repo_id, milestone_id)
-    const issues = (await api.Issues.all({ projectId: repo_id })).filter(issue => issue.milestone && issue.milestone.id === milestone_id)
-    return {
-        title: milestone.title,
-        id: milestone.id,
-        description: milestone.description,
-        due_date: milestone.due_date,
-        state: milestone.state,
-        created_at: milestone.created_at,
-        expired: milestone.expired,
-        issues: issues.length,
-        open_issues: issues.filter(issue => issue.state === 'opened').length,
-        closed_issues: issues.filter(issue => issue.state === 'closed').length,
-        open_issues_percentage: Math.round((issues.filter(issue => issue.state === 'opened').length / issues.length) * 100),
-        closed_issues_percentage: Math.round((issues.filter(issue => issue.state === 'closed').length / issues.length) * 100)
-    }
-}
+// async function getMilestoneOverview(repo_id, milestone_id) {
+//     const milestone = await api.ProjectMilestones.show(repo_id, milestone_id)
+//     const issues = (await api.Issues.all({ projectId: repo_id })).filter(issue => issue.milestone && issue.milestone.id === milestone_id)
+//     return {
+//         title: milestone.title,
+//         id: milestone.id,
+//         description: milestone.description,
+//         due_date: milestone.due_date,
+//         state: milestone.state,
+//         created_at: milestone.created_at,
+//         expired: milestone.expired,
+//         issues: issues.length,
+//         open_issues: issues.filter(issue => issue.state === 'opened').length,
+//         closed_issues: issues.filter(issue => issue.state === 'closed').length,
+//         open_issues_percentage: Math.round((issues.filter(issue => issue.state === 'opened').length / issues.length) * 100),
+//         closed_issues_percentage: Math.round((issues.filter(issue => issue.state === 'closed').length / issues.length) * 100)
+//     }
+// }
 
 //list project issue notes
 async function getProjectIssueNotes(repo_id, issue_id) {
@@ -141,7 +138,7 @@ export default {
     getProjectOverview, 
     getMergeRequests, 
     getMergeRequestOverview, 
-    getProjectMilestones, 
-    getMilestoneOverview, 
+    // getProjectMilestones, 
+    // getMilestoneOverview, 
     getProjectIssueNotes, 
 }
