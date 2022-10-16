@@ -1,20 +1,13 @@
-// import JiraApi from 'jira-client';
-import yargs from 'yargs'
-import { hideBin } from 'yargs/helpers';
 import { AgileClient } from 'jira.js';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-const host = process.env.JIRA_HOST;
-const email = process.env.JIRA_EMAIL;
-const token = process.env.JIRA_TOKEN;
-
 const client = new AgileClient({
-  host: 'https://donataspagan.atlassian.net',
+  host: process.env.JIRA_HOST,
   authentication: {
     basic: {
-      email: 'ladysas.donatas@gmail.com',
-      apiToken: 'KY6NqcLmflBwsHnmJzeoA229',
+      email: process.env.JIRA_EMAIL,
+      apiToken: process.env.JIRA_TOKEN,
     },
   },
 });
@@ -40,39 +33,8 @@ async function getAllBoards() {
     })),
   }
 }
-// const jira = new JiraApi({
-//     protocol: 'https',
-//     host: 'donataspagan.atlassian.net',
-//     username: 'ladysas.donatas@gmail.com',
-//     password: 'l2Um5Rr3hv8qy8dJGfZUAC50',
-//     apiVersion: '2',
-//     strictSSL: true
-//   });
-
-// async function listProjects() {
-//   const projects = await jira.listProjects({})
-//   let repos = []
-//   projects.forEach(project => {
-//     const _project = {
-//       id: project.id,
-//       key: project.key,
-//       name: project.name,
-//     }
-//     repos.push(_project)
-//   }); 
-//   return repos
-// }
 
 export default {
   client,
   getAllBoards
 }
-
-
-// yargs(hideBin(process.argv))
-//   .command('list', 'fetch all projects', () => {}, async () => {
-//     console.info(await getAllBoards())
-//   })
-//   .demandCommand(1, 'You need at least one command before moving on')
-//   .strictCommands()
-//   .parse()
