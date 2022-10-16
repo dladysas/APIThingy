@@ -12,17 +12,6 @@ const client = new AgileClient({
   },
 });
 
-
-async function getAllProjects() {
-  const projects = await client.project.getAllProjects();
-  return {
-    projects: projects.values.map((project) => ({
-      id: project.id,
-      name: project.name,
-    })),
-  };
-}
-
 async function getAllBoards() {
   const boards = await client.board.getAllBoards();
   return {
@@ -34,7 +23,24 @@ async function getAllBoards() {
   }
 }
 
+async function getBoardOverview(board_id) {
+  const board = await client.board.getBoard({ boardId: board_id });
+  return {
+    id: board.id,
+    name: board.name,
+    type: board.type,
+    columns: board.columns.map((column) => ({
+      name: column.name,
+      status: column.statuses.map((status) => ({
+        name: status.name,
+        id: status.id,
+      })),
+    })),
+  }
+}
+
 export default {
   client,
-  getAllBoards
+  getAllBoards,
+  getBoardOverview,
 }
