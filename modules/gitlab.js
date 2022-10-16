@@ -59,7 +59,7 @@ async function getMergeRequests(repo_id) {
 }
 
 async function getMergeRequestOverview(repo_id, merge_request_id) {
-    const merge_request = await api.MergeRequests.show(repo_id, merge_request_id)
+    const merge_request = await api.MergeRequests.all(repo_id, merge_request_id)
     const commits = await api.MergeRequests.commits(repo_id, merge_request_id)
     const approvals = await api.MergeRequests.approvals(repo_id, merge_request_id)
     return {
@@ -78,21 +78,29 @@ async function getMergeRequestOverview(repo_id, merge_request_id) {
         approvals_percentage: Math.round((approvals.length / merge_request.approvals_required) * 100)
     }
 }
-//list project issue notes
-async function getProjectIssueNotes(repo_id, issue_id) {
-    let _notes = []
-    const notes = await api.Issues.allNotes(repo_id, issue_id)
-    notes.forEach(note => {
-        _notes.push({
-            id: note.id,
-            body: note.body,
-            created_at: note.created_at,
-            updated_at: note.updated_at,
-            system: note.system,
-            
+
+async function getProjectIssues(repo_id){
+    let _issues = []
+    const issues = await api.Issues.all({ projectId: repo_id })
+    issues.forEach(issue => {
+        _issues.push({
+            id: issue.id,
+            iid: issue.iid,
+            title: issue.title,
+            state: issue.state,
+            created_at: issue.created_at,
+            updated_at: issue.updated_at,
+            closed_at: issue.closed_at,
+            merged_by: issue.merged_by,
         })
     })
-    return _notes
+    return _issues
+}
+
+async function getIssuesStatistics(repo_id, issue_id) {
+    const issue = await api.IssuesStatistics.all(repo_id, issue_id)
+    return issue
+    
 }
 
 export default { 
@@ -101,5 +109,6 @@ export default {
     getProjectOverview, 
     getMergeRequests, 
     getMergeRequestOverview, 
-    getProjectIssueNotes, 
+    getProjectIssues,
+    getIssuesStatistics,
 }
