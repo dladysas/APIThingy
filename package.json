@@ -15,7 +15,7 @@
   "dependencies": {
     "@gitbeaker/node": "^35.6.0",
     "dotenv": "^16.0.3",
-    "jira-client": "^8.1.0",
+    "jira.js": "^2.15.11",
     "xlsx": "^0.18.5",
     "yargs": "^17.5.1"
   },
