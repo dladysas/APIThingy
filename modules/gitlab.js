@@ -11,51 +11,6 @@ const api = new Gitlab({
 });
 
 //Function to sort through projects/issues/merge requests
-function sortData(data, type, sort, order) {
-    if (type === 'projects') {
-        if (sort === 'name') {
-            if (order === 'asc') {
-                return data.sort((a, b) => a.name.localeCompare(b.name))
-            } else if (order === 'desc') {
-                return data.sort((a, b) => b.name.localeCompare(a.name))
-            }
-        } else if (sort === 'id') {
-            if (order === 'asc') {
-                return data.sort((a, b) => a.id - b.id)
-            } else if (order === 'desc') {
-                return data.sort((a, b) => b.id - a.id)
-            }
-        }
-    } else if (type === 'issues') {
-        if (sort === 'name') {
-            if (order === 'asc') {
-                return data.sort((a, b) => a.title.localeCompare(b.title))
-            } else if (order === 'desc') {
-                return data.sort((a, b) => b.title.localeCompare(a.title))
-            }
-        } else if (sort === 'id') {
-            if (order === 'asc') {
-                return data.sort((a, b) => a.id - b.id)
-            } else if (order === 'desc') {
-                return data.sort((a, b) => b.id - a.id)
-            }
-        }
-    } else if (type === 'mergeRequests') {
-        if (sort === 'name') {
-            if (order === 'asc') {
-                return data.sort((a, b) => a.title.localeCompare(b.title))
-            } else if (order === 'desc') {
-                return data.sort((a, b) => b.title.localeCompare(a.title))
-            }
-        } else if (sort === 'id') {
-            if (order === 'asc') {
-                return data.sort((a, b) => a.id - b.id)
-            } else if (order === 'desc') {
-                return data.sort((a, b) => b.id - a.id)
-            }
-        }
-    }
-}
 
 async function getAllUserProjects() {
     const projects = await api.Projects.all({ membership: true })
